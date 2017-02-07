@@ -17,6 +17,57 @@ import matplotlib.pyplot as plt
 from computeFeatures import computeFeatures
 from computeDistances import computeDistances
 
+
+def average_precision(r):
+    """Score is average precision (area under PR curve)
+    Relevance is binary (nonzero is relevant).
+    >>> r = [1, 1, 0, 1, 0, 1, 0, 0, 0, 1]
+    >>> delta_r = 1. / sum(r)
+    >>> sum([sum(r[:x + 1]) / (x + 1.) * delta_r for x, y in enumerate(r) if y])
+    0.7833333333333333
+    >>> average_precision(r)
+    0.78333333333333333
+    Args:
+        r: Relevance scores (list or numpy) in rank order
+            (first element is the first item)
+    Returns:
+        Average precision
+    """
+    print(r.size)
+    out = [precision_at_k(r, k + 1) for k in range(r.size) if r[k]]
+    if not out:
+        return 0.
+    return np.sum(out) / r.size #np.mean(out)
+
+def precision_at_k(r, k):
+    """Score is precision @ k
+    Relevance is binary (nonzero is relevant).
+    >>> r = [0, 0, 1]
+    >>> precision_at_k(r, 1)
+    0.0
+    >>> precision_at_k(r, 2)
+    0.0
+    >>> precision_at_k(r, 3)
+    0.33333333333333331
+    >>> precision_at_k(r, 4)
+    Traceback (most recent call last):
+        File "<stdin>", line 1, in ?
+    ValueError: Relevance score length < k
+    Args:
+        r: Relevance scores (list or numpy) in rank order
+            (first element is the first item)
+    Returns:
+        Precision @ k
+    Raises:
+        ValueError: len(r) must be >= k
+    """
+    assert k >= 1
+    r = np.asarray(r)[:k] != False
+    if r.size != k:
+        raise ValueError('Relevance score length < k')
+    return np.mean(r)
+
+
 # EDIT THIS TO YOUR OWN PATH IF DIFFERENT
 dbpath = 'fooddb/'  
 
@@ -88,11 +139,36 @@ nearest_idx = np.argsort(D[0, :]);
 
 # quick way of finding category label for top K retrieved images
 retrievedCats = np.uint8(np.floor((nearest_idx[1:nRetrieved+1])/100));
+
+retrievedCats = np.array(retrievedCats)
  
 # find matches
 hits_q = (retrievedCats == gt_idx)
+
+# print(hits_binary)
+
+print("List of hits : {}".format(list(map(int, hits_q))))
+
+print("Average Precision (Mine): %.4f"%(average_precision(hits_q)))
+
+
+# from sklearn.metrics import average_precision_score
+# print(average_precision_score([ gt_idx ] * nRetrieved, retrievedCats))
+
+# print([ gt_idx ] * nRetrieved)
+# print(retrievedCats)
+
+# print(hits_q/(np.arange(nRetrieved)+1))
+# print((np.arange(nRetrieved)+1))
+# print(np.sum(hits_q/(np.arange(nRetrieved)+1)))
+# print(np.sum(hits_q))
   
 # calculate average precision of the ranked matches
+# print(retrievedCats)
+
+# precision_at_each_step = [ (np.count_nonzero(retrievedCats[:i] == gt_idx) / i) for i in range(1,nRetrieved+1) if (retrievedCats[i-1] == gt_idx) ]
+
+# print(np.average(precision_at_each_step) )
 if np.sum(hits_q) != 0:
   avg_prec_q = np.sum(hits_q/(np.arange(nRetrieved)+1)) / np.sum(hits_q)
 else:

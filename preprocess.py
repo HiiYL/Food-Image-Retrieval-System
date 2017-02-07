@@ -38,30 +38,11 @@ def preprocessImage(image):
     return im
 
 
-squeezenet_model = get_squeezenet(nb_classes=10,
- path_to_weights='model/squeezenet_weights_th_dim_ordering_th_kernels.h5',
- dim_ordering='th')
-
-adam = Adam(lr=0.0001,clipnorm=1.,clipvalue=0.5)
-squeezenet_model.compile(optimizer=adam,loss='categorical_crossentropy', metrics=['accuracy'])#,loss_weights=[1., 0.2])
-
-# from keras.utils.visualize_util import plot
-# plot(squeezenet_model, to_file='{}.png'.format('squeezenet'),show_shapes=True)
-
-squeezenet_model.fit(data, Y_train, nb_epoch=5, batch_size=32)
-
 # EDIT THIS TO YOUR OWN PATH IF DIFFERENT
 dbpath = 'fooddb/'  
 
 # these labels are the abbreviations of the actual food names
 labels = ('AK','BL','CD','CL','DR','MG','NL','PG','RC','ST')
-
-y = np.array([ [i] * 100 for i in range(10)]).flatten()
-
-Y_train = to_categorical(y, 10)
-
-
-
 
 
 featvect = []  # empty list for holding features
@@ -82,35 +63,32 @@ else:
 
     np.save('images.npy' ,data)
 
+if not os.path.isfile('model/squeezenet_food.h5'):
+    y = np.array([ [i] * 100 for i in range(10)]).flatten()
+    Y_train = to_categorical(y, 10)
+    squeezenet_model = get_squeezenet(nb_classes=10,
+     path_to_weights='model/squeezenet_weights_th_dim_ordering_th_kernels.h5',
+     dim_ordering='th')
+
+    adam = Adam(lr=0.0001,clipnorm=1.,clipvalue=0.5)
+    squeezenet_model.compile(optimizer=adam,loss='categorical_crossentropy', metrics=['accuracy'])#,loss_weights=[1., 0.2])
+
+    # from keras.utils.visualize_util import plot
+    # plot(squeezenet_model, to_file='{}.png'.format('squeezenet'),show_shapes=True)
+
+    squeezenet_model.fit(data, Y_train, nb_epoch=10, batch_size=32)
+    squeezenet_model.save_weights('model/squeezenet_food.h5')
+else:
+    squeezenet_model = get_squeezenet(nb_classes=10,
+     path_to_weights='model/squeezenet_food.h5',
+     dim_ordering='th')
+
 e1 = cv2.getTickCount()
 featvect = squeezenet_model.predict(data)
 e2 = cv2.getTickCount()
 
 FEtime = (e2 - e1) /cv2.getTickFrequency() 
 print('Feature extraction runtime: %.4f seconds'%np.sum(FEtime))
-
-
-
-    
-    # display image
-    #plt.imshow(img), plt.xticks([]), plt.yticks([])
-    #plt.show()
-    
-    # # compute features and append to list
-    # e1 = cv2.getTickCount() # start timer
-    # feat = computeFeatures(img, model=squeezenet_model)
-    # e2 = cv2.getTickCount()  # stop timer
-    
-    # featvect.append( feat ); 
-    # FEtime[idx] = (e2 - e1) / cv2.getTickFrequency() 
-    
-    # print('Extracting features for image #%d'%idx )
-
-
-
-# temparr = np.array(featvect)
-# fv = np.reshape(temparr, (temparr.shape[0], temparr.shape[1]) )
-# del temparr
 
 # pickle your features
 pickle.dump( featvect, open( "feat.pkl", "wb" ) )
