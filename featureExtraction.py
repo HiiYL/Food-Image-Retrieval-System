@@ -24,7 +24,7 @@ labels = ('AK','BL','CD','CL','DR','MG','NL','PG','RC','ST')
 featvect = []  # empty list for holding features
 FEtime = np.zeros(1000)
 
-for idx in range(1000):
+for idx in range(20):
     img = cv2.imread( os.path.join(dbpath, str(idx) + ".jpg") )
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     
