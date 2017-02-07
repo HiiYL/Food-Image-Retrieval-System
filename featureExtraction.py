@@ -16,7 +16,7 @@ import matplotlib.pyplot as plt
 from computeFeatures import computeFeatures
 
 # EDIT THIS TO YOUR OWN PATH IF DIFFERENT
-dbpath = 'fooddb/'  
+dbpath = 'fooddb/'   
 
 # these labels are the abbreviations of the actual food names
 labels = ('AK','BL','CD','CL','DR','MG','NL','PG','RC','ST')
@@ -24,7 +24,7 @@ labels = ('AK','BL','CD','CL','DR','MG','NL','PG','RC','ST')
 featvect = []  # empty list for holding features
 FEtime = np.zeros(1000)
 
-for idx in range(20):
+for idx in range(1000):
     img = cv2.imread( os.path.join(dbpath, str(idx) + ".jpg") )
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     
