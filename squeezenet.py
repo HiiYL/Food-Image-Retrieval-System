@@ -31,11 +31,11 @@ def get_squeezenet(nb_classes=1000, path_to_weights=None,dim_ordering='tf'):
     x = fire_module(x, fire_id=9, squeeze=64, expand=256, dim_ordering=dim_ordering)
     x = Dropout(0.5, name='drop9')(x)
 
-    x = Convolution2D(nb_classes, 1, 1, border_mode='valid', name='conv10',activation='relu')(x)
+    x = Convolution2D(nb_classes, 1, 1, border_mode='valid', name='conv10_',activation='relu')(x)
     out = GlobalAveragePooling2D()(x)
     model = Model(input=input_img, output=[out])
     if path_to_weights:
-        model.load_weights(path_to_weights)
+        model.load_weights(path_to_weights,by_name=True)
     return model
 
 

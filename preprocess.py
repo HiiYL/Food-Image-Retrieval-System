@@ -17,6 +17,9 @@ from computeFeatures import computeFeatures
 
 
 from squeezenet import get_squeezenet
+from keras.optimizers import SGD, RMSprop,Adam
+
+from keras.utils.np_utils import to_categorical
 
 width = 227
 height = 227
@@ -35,8 +38,17 @@ def preprocessImage(image):
     return im
 
 
-squeezenet_model = get_squeezenet(nb_classes=1000,
- path_to_weights='model/squeezenet_weights_th_dim_ordering_th_kernels.h5',dim_ordering='th')
+squeezenet_model = get_squeezenet(nb_classes=10,
+ path_to_weights='model/squeezenet_weights_th_dim_ordering_th_kernels.h5',
+ dim_ordering='th')
+
+adam = Adam(lr=0.0001,clipnorm=1.,clipvalue=0.5)
+squeezenet_model.compile(optimizer=adam,loss='categorical_crossentropy', metrics=['accuracy'])#,loss_weights=[1., 0.2])
+
+# from keras.utils.visualize_util import plot
+# plot(squeezenet_model, to_file='{}.png'.format('squeezenet'),show_shapes=True)
+
+squeezenet_model.fit(data, Y_train, nb_epoch=5, batch_size=32)
 
 # EDIT THIS TO YOUR OWN PATH IF DIFFERENT
 dbpath = 'fooddb/'  
@@ -44,10 +56,16 @@ dbpath = 'fooddb/'
 # these labels are the abbreviations of the actual food names
 labels = ('AK','BL','CD','CL','DR','MG','NL','PG','RC','ST')
 
+y = np.array([ [i] * 100 for i in range(10)]).flatten()
+
+Y_train = to_categorical(y, 10)
+
+
+
 
 
 featvect = []  # empty list for holding features
-FEtime = np.zeros(1000)
+# FEtime = np.zeros(1000)
 
 if os.path.isfile('images.npy'):
     data = np.load('images.npy')
