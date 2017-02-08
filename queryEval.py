@@ -81,7 +81,7 @@ D = computeDistances(fv)
 # *** Evaluation ----------------------------------------------------------
 
 # number of images to retrieve
-nRetrieved = 50
+nRetrieved = 100
 
 # access distances of all images from query image (first image), sort them asc
 nearest_idx = np.argsort(D[0, :]);

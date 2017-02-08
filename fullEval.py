@@ -20,7 +20,7 @@ from computeDistances import computeDistances
 dbSize = 1000       # number of images in food database
 nPerCat = 100       # number of images in food database for each category
 nC = 10             # number of categories
-nRetrieved = 50     # number of images to retrieve
+nRetrieved = 100     # number of images to retrieve
 loadFV = True       # flag to indicate if feature vector will be loaded
 
 # Read command line args
