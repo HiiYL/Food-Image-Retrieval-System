@@ -54,10 +54,13 @@ for o, a in myopts:
 
 if loadFV:
     # load pickled features
-    fv = pickle.load(open("feat-deep.pkl", "rb") )
-    fv_baseline = pickle.load(open("feat.pkl", "rb") )
-    print('Features loaded')
-        
+    try:
+      fv = pickle.load(open("feat-deep.pkl", "rb") )
+      fv_baseline = pickle.load(open("feat.pkl", "rb") )
+      print('Features loaded')
+    except FileNotFoundError:
+      print("[ERROR] run both featureExtraction.py and featureExtractionDeep.py before evaluation")
+      exit(0)
     
 # EDIT THIS TO YOUR OWN PATH IF DIFFERENT
 dbpath = 'fooddb/'   
@@ -167,17 +170,6 @@ plt.xlim([0,10]), plt.ylim([0,1])
 markerline, stemlines, baseline = plt.stem(x, mean_avg_prec_perCat, '-.')
 plt.grid(True)
 plt.xlabel('Food categories'), plt.ylabel('MAP per category')
-
-#fig, axs = plt.subplots(2, 5, figsize=(12, 6), facecolor='w', edgecolor='w')
-#fig.subplots_adjust(hspace = .5, wspace=.001)
-#axs = axs.ravel()
-#for i in range(nC):
-#    imgfile = os.path.join(dbpath, str(nearest_idx[i+1]) + '.jpg')
-#    matched_img = cv2.cvtColor(cv2.imread(imgfile), cv2.COLOR_BGR2RGB)
-#    axs[i].imshow(matched_img)
-#    axs[i].set_title(str(i+1) + '. ' + labels[retrievedCats[i]])
-#    axs[i].set_xticks([])
-#    axs[i].set_yticks([])
 
 plt.show()
       

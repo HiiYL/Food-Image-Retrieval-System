@@ -1,12 +1,13 @@
+## Hack to modify dim ordering
 import os
 
 filename = os.path.join(os.path.expanduser('~'), '.keras', 'keras.json')
-try:
+if not os.path.exists(os.path.dirname(filename)):
     os.makedirs(os.path.dirname(filename))
-except:
-    print("File already exists... skipping")
+
 with open(filename, "w") as f:
     f.write('{"backend": "theano","floatx": "float32","epsilon": 1e-07,"image_dim_ordering": "th"}')
+
 
 from keras.layers import Input, Dense, Convolution2D, MaxPooling2D, AveragePooling2D, ZeroPadding2D, Dropout, Flatten, merge, Reshape, Activation
 from keras.models import Model

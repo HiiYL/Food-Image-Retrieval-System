@@ -58,9 +58,13 @@ for o, a in myopts:
 featvect = []  # empty list for holding features
 FEtime = np.zeros(1000)
 
-# load pickled features
-fv = pickle.load(open("feat-deep.pkl", "rb") )
-print('Features loaded')
+try:
+    # load pickled features
+    fv = pickle.load(open("feat-deep.pkl", "rb") )
+    print('Features loaded')
+except FileNotFoundError:
+    print("[ERROR] run featureExtractionDeep.py before evaluation ")
+    exit(0)cd .
 
 # read query image file
 img = cv2.imread(queryfile)
@@ -120,29 +124,5 @@ for i in range(10):
     axs[i].set_title(str(i+1) + '. ' + labels[retrievedCats[i]])
     axs[i].set_xticks([])
     axs[i].set_yticks([])
-
-# precision_array = np.zeros(nRetrieved)
-# recall_array = np.zeros(nRetrieved)
-
-# for i in range(nRetrieved):
-#     current_hits_q = hits_q[:i]
-#     sum_relevant = np.sum(current_hits_q)
-
-#     precision_array[i] = np.sum(current_hits_q*np.cumsum(current_hits_q)/(np.arange(i)+1)) / np.sum(current_hits_q)# / np.sum(current_hits_q)
-#     recall_array[nRetrieved-i-1] = sum_relevant / i
-
-# # setup plot details
-# colors = cycle(['navy', 'turquoise', 'darkorange', 'cornflowerblue', 'teal'])
-# lw = 2
-
-# plt.clf()
-# plt.plot(recall_array, precision_array, lw=lw, color='navy',
-#          label='Precision-Recall curve')
-# plt.xlabel('Recall')
-# plt.ylabel('Precision')
-# plt.ylim([0.0, 1.05])
-# plt.xlim([0.0, 1.0])
-# plt.title('Precision-Recall Curve')
-# plt.legend(loc="lower left")
     
 plt.show()
