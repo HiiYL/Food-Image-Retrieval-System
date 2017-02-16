@@ -2,3 +2,4 @@ feat.pkl
 fooddb/
 __pycache__/
 *.npy
+*.pyc

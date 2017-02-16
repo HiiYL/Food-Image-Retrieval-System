@@ -2,7 +2,10 @@
 import os
 
 filename = os.path.join(os.path.expanduser('~'), '.keras', 'keras.json')
-os.makedirs(os.path.dirname(filename), exist_ok=True)
+try:
+    os.makedirs(os.path.dirname(filename))
+except:
+    print("File already exists... skipping")
 with open(filename, "w") as f:
     f.write('{"backend": "theano","floatx": "float32","epsilon": 1e-07,"image_dim_ordering": "th"}')
 
@@ -24,14 +27,6 @@ height = 227
 channel = 3
 
 imagesCount = 1000
-
-
-## Hack to modify dim ordering
-filename = os.path.join(os.path.expanduser('~'), '.keras', 'keras.json')
-os.makedirs(os.path.dirname(filename), exist_ok=True)
-with open(filename, "w") as f:
-    f.write('{"backend": "theano","floatx": "float32","epsilon": 1e-07,"image_dim_ordering": "th"}')
-
 
 def preprocessImage(image):
     im = cv2.resize(image, (width, height)).astype(np.float32)
