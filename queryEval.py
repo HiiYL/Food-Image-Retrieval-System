@@ -16,6 +16,10 @@ import sys, getopt
 import matplotlib.pyplot as plt
 from computeFeatures import computeFeatures
 from computeDistances import computeDistances
+from itertools import cycle
+
+from sklearn.metrics import precision_recall_curve
+from sklearn.metrics import average_precision_score
 
 # EDIT THIS TO YOUR OWN PATH IF DIFFERENT
 dbpath = 'fooddb/'  
@@ -55,7 +59,7 @@ featvect = []  # empty list for holding features
 FEtime = np.zeros(1000)
 
 # load pickled features
-fv = pickle.load(open("feat.pkl", "rb") )
+fv = pickle.load(open("feat-deep.pkl", "rb") )
 print('Features loaded')
 
 # read query image file
@@ -94,26 +98,6 @@ retrievedCats = np.array(retrievedCats)
 # find matches
 hits_q = (retrievedCats == gt_idx)
 
-# print("Average Precision (Mine): %.4f"%(average_precision(hits_q)))
-
-
-# from sklearn.metrics import average_precision_score
-# print(average_precision_score([ gt_idx ] * nRetrieved, retrievedCats))
-
-# print([ gt_idx ] * nRetrieved)
-# print(retrievedCats)
-
-# print(hits_q/(np.arange(nRetrieved)+1))
-# print((np.arange(nRetrieved)+1))
-# print(np.sum(hits_q/(np.arange(nRetrieved)+1)))
-# print(np.sum(hits_q))
-  
-# calculate average precision of the ranked matches
-# print(retrievedCats)
-
-# precision_at_each_step = [ (np.count_nonzero(retrievedCats[:i] == gt_idx) / i) for i in range(1,nRetrieved+1) if (retrievedCats[i-1] == gt_idx) ]
-
-# print(np.average(precision_at_each_step) )
 if np.sum(hits_q) != 0:
   avg_prec_q = np.sum(hits_q*np.cumsum(hits_q)/(np.arange(nRetrieved)+1)) / np.sum(hits_q)
 else:
@@ -136,5 +120,29 @@ for i in range(10):
     axs[i].set_title(str(i+1) + '. ' + labels[retrievedCats[i]])
     axs[i].set_xticks([])
     axs[i].set_yticks([])
+
+# precision_array = np.zeros(nRetrieved)
+# recall_array = np.zeros(nRetrieved)
+
+# for i in range(nRetrieved):
+#     current_hits_q = hits_q[:i]
+#     sum_relevant = np.sum(current_hits_q)
+
+#     precision_array[i] = np.sum(current_hits_q*np.cumsum(current_hits_q)/(np.arange(i)+1)) / np.sum(current_hits_q)# / np.sum(current_hits_q)
+#     recall_array[nRetrieved-i-1] = sum_relevant / i
+
+# # setup plot details
+# colors = cycle(['navy', 'turquoise', 'darkorange', 'cornflowerblue', 'teal'])
+# lw = 2
+
+# plt.clf()
+# plt.plot(recall_array, precision_array, lw=lw, color='navy',
+#          label='Precision-Recall curve')
+# plt.xlabel('Recall')
+# plt.ylabel('Precision')
+# plt.ylim([0.0, 1.05])
+# plt.xlim([0.0, 1.0])
+# plt.title('Precision-Recall Curve')
+# plt.legend(loc="lower left")
     
 plt.show()

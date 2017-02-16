@@ -16,6 +16,8 @@ import sys, getopt
 import matplotlib.pyplot as plt
 from computeDistances import computeDistances
 
+from itertools import cycle
+
 # Defaults
 dbSize = 1000       # number of images in food database
 nPerCat = 100       # number of images in food database for each category
@@ -52,7 +54,8 @@ for o, a in myopts:
 
 if loadFV:
     # load pickled features
-    fv = pickle.load(open("feat.pkl", "rb") )
+    fv = pickle.load(open("feat-deep.pkl", "rb") )
+    fv_baseline = pickle.load(open("feat.pkl", "rb") )
     print('Features loaded')
         
     
@@ -67,12 +70,48 @@ FEtime = np.zeros(dbSize)
 
 # find all pairwise distances
 D = computeDistances(fv)
+D_baseline = computeDistances(fv_baseline)
 
 
 # *** Evaluation ----------------------------------------------------------
+def evaluate(D):
+  avg_prec = np.zeros(dbSize)
+  retrieves = range(1,1000,10)
+  precisions = []
+  recalls = []
+  for retrive in retrieves:
+    for c in range(nC): 
+      for i in range(nPerCat):
+          idx = (c*nPerCat) + i;
+    
+          # access distances of all images from query image, sort them asc
+          nearest_idx = np.argsort(D[idx, :]);
+    
+          # quick way of finding category label for top K retrieved images
+          retrievedCats = np.uint8(np.floor((nearest_idx[1:retrive+1])/nPerCat));
+          
+          # find matches
+          hits = (retrievedCats == np.floor(idx/nPerCat))
+          
+          # calculate average precision of the ranked matches
+          if np.sum(hits) != 0:
+              avg_prec[idx] = np.sum(hits*np.cumsum(hits)/(np.arange(retrive)+1)) / np.sum(hits)
+          else:
+              avg_prec[idx] = 0.0
+          
+    mean_avg_prec = np.mean(avg_prec)
+    recall = np.sum(hits) / nPerCat
+    
+    precisions = precisions + [mean_avg_prec]
+    recalls = recalls + [recall]
+  return precisions, recalls
+
+
+precisions,recalls = evaluate(D)
+precisions_baseline,recalls_baseline = evaluate(D_baseline)
+
+
 avg_prec = np.zeros(dbSize)
-
-
 # iterate through all images from each category as query image
 for c in range(nC): 
   for i in range(nPerCat):
@@ -97,7 +136,27 @@ mean_avg_prec = np.mean(avg_prec)
 mean_avg_prec_perCat = np.mean(avg_prec.reshape(nPerCat, nC), axis=0)
 recall = np.sum(hits) / nPerCat
 
+
+
 # *** Results & Visualization-----------------------------------------------
+
+# setup plot details
+colors = cycle(['navy', 'turquoise', 'darkorange', 'cornflowerblue', 'teal'])
+lw = 2
+
+plt.clf()
+plt.plot(recalls, precisions, lw=lw, color='navy',
+         label='Squeezenet')
+plt.plot(recalls_baseline, precisions_baseline, lw=lw, color='darkorange',
+         label='Color Histogram')
+plt.xlabel('Recall')
+plt.ylabel('Precision')
+plt.ylim([0.0, 1.05])
+plt.xlim([0.0, 1.0])
+plt.title('Precision-Recall Curve')
+plt.legend(loc="lower left")
+
+plt.figure()
 
 print('Mean Average Precision, MAP@%d: %.4f'%(nRetrieved,mean_avg_prec))
 print('Recall Rate@%d: %.4f'%(nRetrieved,recall)) 

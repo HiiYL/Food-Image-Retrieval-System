@@ -1,13 +1,11 @@
-"""
-featureExtraction.py
+## Hack to modify dim ordering
+import os
 
-DO NOT MODIFY ANY CODES IN THIS FILE
-OTHERWISE YOUR RESULTS MAY BE INCORRECTLY EVALUATED! 
+filename = os.path.join(os.path.expanduser('~'), '.keras', 'keras.json')
+os.makedirs(os.path.dirname(filename), exist_ok=True)
+with open(filename, "w") as f:
+    f.write('{"backend": "theano","floatx": "float32","epsilon": 1e-07,"image_dim_ordering": "th"}')
 
-@author: John See, 2017
-For questions or bug reporting, please send an email to johnsee@mmu.edu.my
-
-"""
 import os
 import cv2
 import numpy as np
@@ -26,6 +24,13 @@ height = 227
 channel = 3
 
 imagesCount = 1000
+
+
+## Hack to modify dim ordering
+filename = os.path.join(os.path.expanduser('~'), '.keras', 'keras.json')
+os.makedirs(os.path.dirname(filename), exist_ok=True)
+with open(filename, "w") as f:
+    f.write('{"backend": "theano","floatx": "float32","epsilon": 1e-07,"image_dim_ordering": "th"}')
 
 
 def preprocessImage(image):
@@ -91,5 +96,5 @@ FEtime = (e2 - e1) /cv2.getTickFrequency()
 print('Feature extraction runtime: %.4f seconds'%np.sum(FEtime))
 
 # pickle your features
-pickle.dump( featvect, open( "feat.pkl", "wb" ) )
+pickle.dump( featvect, open( "feat-deep.pkl", "wb" ) )
 print('Features pickled!')

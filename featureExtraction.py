@@ -34,7 +34,7 @@ for idx in range(1000):
     
     # compute features and append to list
     e1 = cv2.getTickCount() # start timer
-    feat = computeFeatures(img)
+    feat = computeFeatures(img, deep_features=False)
     e2 = cv2.getTickCount()  # stop timer
     
     featvect.append( feat ); 

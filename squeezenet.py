@@ -1,3 +1,10 @@
+import os
+
+filename = os.path.join(os.path.expanduser('~'), '.keras', 'keras.json')
+os.makedirs(os.path.dirname(filename), exist_ok=True)
+with open(filename, "w") as f:
+    f.write('{"backend": "theano","floatx": "float32","epsilon": 1e-07,"image_dim_ordering": "th"}')
+
 from scipy.misc import imread, imresize
 
 from keras.layers import Input, Dense, Convolution2D, MaxPooling2D, AveragePooling2D, ZeroPadding2D, Dropout, Flatten, merge, Reshape, Activation
