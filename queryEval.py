@@ -64,7 +64,7 @@ try:
     print('Features loaded')
 except FileNotFoundError:
     print("[ERROR] run featureExtractionDeep.py before evaluation ")
-    exit(0)cd .
+    exit(0)
 
 # read query image file
 img = cv2.imread(queryfile)
