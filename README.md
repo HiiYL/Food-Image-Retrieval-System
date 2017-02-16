@@ -2,6 +2,7 @@
 Retrieve images of your favourite food!
 
 ## Installation
+##### Note: Installation has been tested on python 2.7 and python 3.4, if you encounter any issues, please first test if it works with the two versions.
 1. (Optional) Fork the repository.
 2. Clone the repository.
 3. ` conda install -c menpo cyvlfeat opencv3 h5py theano`
