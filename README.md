@@ -1,6 +1,8 @@
 # Food-Image-Retrieval-System
 Retrieve images of your favourite food!
 
+Refer to [the report](https://github.com/HiiYL/Food-Image-Retrieval-System/blob/master/Report-Assignment2.pdf) for more information.
+
 ## Installation
 ##### Note: Installation has been tested on python 2.7 and python 3.4, if you encounter any issues, please first test if it works with the two versions.
 1. (Optional) Fork the repository.
@@ -27,12 +29,3 @@ Once all requirements have been satisfied, run scripts in following order.
 3. Commit your changes: `git commit -am 'Add some feature'`
 4. Push to the branch: `git push origin my-new-feature`
 5. Submit a pull request :D
-
-## History
-TODO: Write history
-
-## Credits
-TODO: Write credits
-
-## License
-TODO: Write license
