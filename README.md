@@ -16,6 +16,11 @@ Once all requirements have been satisfied, run scripts in following order.
 2. ` python featureExtractionDeep.py `
 3. ` python fullEval.py `
 
+
+
+## Performance
+![figure_1](https://cloud.githubusercontent.com/assets/7908951/24045271/72bb0836-0b59-11e7-8c84-c2e5c3ca3e84.png)
+
 ## Contributing
 1. Fork it!
 2. Create your feature branch: `git checkout -b my-new-feature`
